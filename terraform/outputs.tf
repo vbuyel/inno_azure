@@ -1,0 +1,15 @@
+output "resource_group_name" {
+  value = azurerm_resource_group.rg.name
+}
+
+output "storage_account_name" {
+  value = azurerm_storage_account.sa.name
+}
+
+output "vm_name" {
+  value = azurerm_linux_virtual_machine.vm.name
+}
+
+output "vm_private_ip" {
+  value = azurerm_network_interface.nic.private_ip_address
+}
