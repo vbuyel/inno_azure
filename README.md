@@ -1,43 +1,39 @@
 # inno_azure
 
-Минимальный практический проект для знакомства с Azure через Terraform, Portal и Azure CLI.
+Minimal Azure data platform project structure using Terraform and a Medallion architecture (`bronze` / `silver` / `gold`).
 
 ```text
 inno_azure/
-├── terraform/
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   ├── providers.tf
-│   └── terraform.tfvars.example
-├── python/
+├── infrastructure/
+│   ├── modules/
+│   │   ├── resource-group/
+│   │   ├── storage/
+│   │   ├── identity/
+│   │   └── monitoring/
+│   └── environments/
+│       ├── dev/
+│       └── prod/
+├── ingestion/
+│   ├── api/
+│   ├── database/
+│   └── files/
+├── processing/
+│   ├── bronze/
+│   ├── silver/
+│   └── gold/
+├── orchestration/
+├── warehouse/
+├── tests/
+├── monitoring/
+├── .github/workflows/
 └── README.md
 ```
 
-## План практики
+## Quick Start (Terraform)
 
-1. **Создать Azure Account** — зарегистрируйтесь на [portal.azure.com](https://portal.azure.com) и установите Azure CLI (`brew install azure-cli`).
-2. **Subscription и Resource Group** — выполните `az login`, получите ID подписки (`az account show --query id -o tsv`). Resource Group `rg-practice-1` создаётся в `terraform/main.tf`.
-3. **Storage Account и Virtual Machine** — скопируйте `terraform/terraform.tfvars.example` в `terraform/terraform.tfvars`, заполните значения и разверните стек:
-   ```bash
-   cd terraform
-   terraform init
-   terraform plan
-   terraform apply
-   ```
-4. **Посмотреть ресурсы в Portal** — откройте **Resource groups** → `rg-practice-1`, изучите **Resource visualizer** и **JSON View**.
-5. **Основные команды Azure CLI**:
-   ```bash
-   az account list -o table
-   az group list -o table
-   az resource list --resource-group rg-practice-1 -o table
-   az storage account list --resource-group rg-practice-1 -o table
-   az vm list -d --resource-group rg-practice-1 -o table
-   ```
-6. **Изучить Cost Management** — откройте **Cost Management + Billing** → **Cost analysis**, отфильтруйте по `rg-practice-1`.
-7. **Удалить ресурсы и проверить прекращение начислений**:
-   ```bash
-   terraform destroy
-   az group exists --name rg-practice-1
-   ```
-   Убедитесь в Portal, что `rg-practice-1` удалена и дневные начисления перестали расти.
+```bash
+cd infrastructure/environments/dev
+terraform init
+terraform plan -var="subscription_id=<SUBSCRIPTION_ID>" -var="storage_account_name=<UNIQUE_NAME>"
+terraform apply -var="subscription_id=<SUBSCRIPTION_ID>" -var="storage_account_name=<UNIQUE_NAME>"
+```
